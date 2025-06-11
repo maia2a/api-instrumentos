@@ -1,80 +1,92 @@
 
+-----
 
+
+
+````markdown
 # Desafio Desenvolvedor - API de Instrumentos Financeiros
+
+![Python](https://img.shields.io/badge/Python-3.12%2B-blue.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.110%2B-green.svg)
+![Docker](https://img.shields.io/badge/Docker-25%2B-blue.svg)
+![Status](https://img.shields.io/badge/status-concluído-brightgreen)
 
 Este repositório contém a solução para o **Desafio de Desenvolvedor da Oliveira Trust**. O projeto consiste em uma API RESTful para processar, armazenar e consultar dados de instrumentos financeiros, com base nos arquivos disponibilizados pela B3.
 
-A aplicação foi desenvolvida em Python, utilizando o framework FastAPI, e estruturada com foco em **Clean Code** e **Clean Architecture**, visando a manutenibilidade, testabilidade e separação de responsabilidades.
+A aplicação foi desenvolvida em Python, utilizando o framework FastAPI, e estruturada com foco em **Clean Code** e **Clean Architecture**, visando a manutenibilidade, testabilidade e separação de responsabilidades. O ambiente é totalmente containerizado com Docker para garantir consistência e facilidade no setup.
 
 ## ✨ Principais Funcionalidades
 
-  - **Upload de Arquivos:** Endpoint para receber arquivos nos formatos `.csv` e `.xlsx`. Possui uma trava para impedir o processamento do mesmo arquivo (baseado no conteúdo) mais de uma vez.
-  - **Histórico de Uploads:** Endpoint que permite consultar os arquivos que já foram processados, com filtros por nome e data de upload.
-  - **Busca de Instrumentos:** Endpoint robusto para consultar os dados dos instrumentos, permitindo filtros por `TckrSymb` e `RptDt`. Caso nenhum filtro seja aplicado, o resultado é paginado.
+- **Upload de Arquivos:** Endpoint para receber arquivos nos formatos `.csv` e `.xlsx`. Possui uma trava para impedir o processamento do mesmo arquivo (baseado no conteúdo) mais de uma vez.
+- **Histórico de Uploads:** Endpoint que permite consultar os arquivos que já foram processados, com filtros por nome e data de upload.
+- **Busca de Instrumentos:** Endpoint robusto para consultar os dados dos instrumentos, permitindo filtros por `TckrSymb` e `RptDt`. Caso nenhum filtro seja aplicado, o resultado é paginado.
 
 ## 🏛️ Arquitetura do Projeto
 
 Para garantir um código desacoplado e organizado, a aplicação segue os princípios da **Arquitetura Limpa (Clean Architecture)**. As responsabilidades são divididas em camadas:
 
-  - **`src/domain`**: A camada mais interna. Contém as entidades de negócio (`Instrument`, `UploadHistory`) e as regras de negócio puras, sem depender de frameworks ou banco de dados.
-  - **`src/application`**: Contém os casos de uso da aplicação, que orquestram o fluxo de dados entre as camadas. É aqui que a lógica da aplicação reside (ex: `processar_upload`, `buscar_instrumentos`).
-  - **`src/infrastructure`**: A camada mais externa. Contém os detalhes de implementação, como o servidor web (FastAPI), a lógica de acesso ao banco de dados (SQLAlchemy) e outras ferramentas externas.
-
-Essa estrutura torna a aplicação mais resiliente a mudanças e mais fácil de testar.
+- **`src/domain`**: A camada mais interna. Contém as entidades de negócio e as regras puras.
+- **`src/application`**: Contém os casos de uso que orquestram o fluxo de dados.
+- **`src/infrastructure`**: A camada mais externa. Contém os detalhes de implementação (FastAPI, SQLAlchemy, etc.).
 
 ## 🚀 Tecnologias Utilizadas
 
-  - **Linguagem:** Python 3.12+
-  - **Framework da API:** FastAPI
-  - **Processamento de Dados:** Pandas
-  - **Banco de Dados:** SQLite (via SQLAlchemy Core para simplicidade e portabilidade)
-  - **Servidor ASGI:** Uvicorn
-  - **Validação de Dados:** Pydantic
+- **Linguagem:** Python 3.12+
+- **Framework da API:** FastAPI
+- **Processamento de Dados:** Pandas & OpenPyXL
+- **Banco de Dados:** SQLite (via SQLAlchemy Core)
+- **Containerização:** Docker & Docker Compose
+- **Servidor ASGI:** Uvicorn
 
-## ⚙️ Configuração do Ambiente
+## 🚀 Como Executar o Projeto
 
-Siga os passos abaixo para executar o projeto localmente.
+Existem duas formas de executar a aplicação. A maneira com Docker é a mais recomendada por ser mais simples e garantir um ambiente consistente.
 
-### Pré-requisitos
+### Opção 1: Com Docker (Recomendado)
+
+Esta abordagem garante que você não precise se preocupar com versão do Python ou dependências.
+
+**Pré-requisitos:**
+- Docker
+- Docker Compose
+
+**Execução:**
+Na raiz do projeto, execute o seguinte comando:
+```bash
+docker compose up --build
+````
+
+Isso irá construir a imagem Docker e iniciar o contêiner da aplicação. A API estará disponível em `http://127.0.0.1:8000`.
+
+Para parar a aplicação, pressione `Ctrl + C` no terminal e depois execute `docker compose down` para remover os contêineres.
+
+### Opção 2: Localmente (Sem Docker)
+
+**Pré-requisitos:**
 
   - Git
   - Python 3.12 ou superior
-  - `venv` (geralmente incluído no Python)
 
-### Passos para Instalação
+**Passos:**
 
 1.  **Clone o repositório:**
-
     ```bash
     git clone <URL_DO_SEU_REPOSITORIO>
     cd desafio-desenvolvedor
     ```
-
 2.  **Crie e ative um ambiente virtual:**
-
     ```bash
-    # Criar o ambiente
     python3 -m venv venv
-
-    # Ativar no Linux/macOS/WSL
     source venv/bin/activate
     ```
-
 3.  **Instale as dependências:**
-
     ```bash
     pip install -r requirements.txt
     ```
-
-## ▶️ Executando a Aplicação
-
-Com o ambiente virtual ativado e as dependências instaladas, inicie o servidor com o seguinte comando:
-
-```bash
-uvicorn main:app --reload
-```
-
-  - `--reload`: Faz com que o servidor reinicie automaticamente após qualquer alteração no código.
+4.  **Inicie o servidor:**
+    ```bash
+    uvicorn main:app --reload
+    ```
 
 A API estará disponível em `http://127.0.0.1:8000`.
 
@@ -91,47 +103,36 @@ Nesta página, é possível visualizar todos os endpoints e testá-los diretamen
 #### 1\. Upload de Arquivo
 
 ```bash
-curl -X POST -F "file=@/caminho/para/seu/teste.csv" http://127.0.0.1:8000/api/upload
+curl -X POST -F "file=@/caminho/para/seu/teste.csv" [http://127.0.0.1:8000/api/upload](http://127.0.0.1:8000/api/upload)
 ```
-
-> **Nota:** Substitua `/caminho/para/seu/teste.csv` pelo caminho real do arquivo que deseja enviar.
 
 #### 2\. Consultar Histórico de Uploads
 
 ```bash
-# Buscar todo o histórico
-curl -X GET http://127.0.0.1:8000/api/history
-
-# Filtrar por nome do arquivo
-curl -X GET "http://127.0.0.1:8000/api/history?filename=teste.csv"
+curl -X GET "[http://127.0.0.1:8000/api/history?filename=teste.csv](http://127.0.0.1:8000/api/history?filename=teste.csv)"
 ```
 
 #### 3\. Buscar Conteúdo dos Arquivos
 
 ```bash
-# Busca geral paginada
-curl -X GET http://127.0.0.1:8000/api/instruments
-
-# Busca filtrando por Ticker Symbol
-curl -X GET "http://127.0.0.1:8000/api/instruments?TckrSymb=AMZO34"
-
-# Busca combinando Ticker e Data
-curl -X GET "http://127.0.0.1:8000/api/instruments?TckrSymb=AMZO34&RptDt=2025-06-11"
+curl -X GET "[http://127.0.0.1:8000/api/instruments?TckrSymb=AMZO34&RptDt=2025-06-11](http://127.0.0.1:8000/api/instruments?TckrSymb=AMZO34&RptDt=2025-06-11)"
 ```
 
 ## ⭐ Possíveis Melhorias (Bônus)
 
 Para demonstrar conhecimento em tecnologias adicionais e escalabilidade, as seguintes melhorias podem ser implementadas:
 
-  - **Containers (Docker):** Criar um `Dockerfile` e `docker-compose.yml` para facilitar o setup e garantir a portabilidade do ambiente.
-  - **Filas (Celery & Redis):** Mover o processamento de arquivos para uma tarefa assíncrona, fazendo com que o endpoint de upload responda instantaneamente ao usuário.
-  - **Cache (Redis):** Implementar um cache para as consultas mais frequentes no endpoint de busca, diminuindo a carga no banco de dados e o tempo de resposta.
-  - **Banco de Dados NoSQL (MongoDB):** Migrar a persistência dos dados para um banco de dados orientado a documentos, que pode ser mais adequado para a natureza dos dados.
+  - **Filas (Celery & Redis):** Mover o processamento de arquivos para uma tarefa assíncrona.
+  - **Cache (Redis):** Implementar um cache para as consultas mais frequentes.
+  - **Testes Automatizados (`pytest`):** Adicionar testes unitários e de integração para garantir a qualidade do código.
+  - **Banco de Dados NoSQL (MongoDB):** Migrar a persistência dos dados para um banco de dados orientado a documentos.
   - **Autenticação (JWT):** Proteger os endpoints da API utilizando tokens JWT.
 
 -----
 
-Feito por **Gabriell Maia do Amaral Duarte**
+Feito por **[Gabriell Maia do Amaral Duarte]**
 
   * **LinkedIn:** [https://www.linkedin.com/in/biellmaaia/](https://www.google.com/search?q=https://www.linkedin.com/in/biellmaaia/)
   * **GitHub:** [https://github.com/maia2a](https://www.google.com/search?q=https://github.com/maia2a)
+
+<!-- end list -->
