@@ -29,7 +29,7 @@ def get_history(filename: Optional[str] = Query(None), upload_date: Optional[dat
     history = use_cases.list_upload_history(filename,upload_date)
     return history
 
-@router.get("/instruments", response_model=List[schemas.InstrumentOut])
+@router.get("/instruments", response_model=List[schemas.InstrumentsOut])
 def search_instruments_endpoint(
     TckrSymb: Optional[str] = Query(None, description="Símbolo do Ticker (ex: AMZO34)"),
     RptDt: Optional[date] = Query(None, description="Data do relatório (ex: 2024-08-26)"),
