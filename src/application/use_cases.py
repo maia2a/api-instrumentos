@@ -42,4 +42,4 @@ def find_instruments(TckrSymb: Optional[str]=None, RptDt: Optional[str]=None, pa
     return repositories.find_instruments(TckrSymb, RptDt, page, page_size)
 def list_upload_history(filename: Optional[str]=None, upload_date: Optional[str]=None):
     """Caso de uso para listar o histórico de upload de arquivos."""
-    return repositories.list_upload_history(filename, upload_date)
+    return repositories.get_upload_history(filename, upload_date)

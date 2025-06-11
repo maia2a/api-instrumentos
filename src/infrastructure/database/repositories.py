@@ -76,7 +76,7 @@ def search_instruments(TckrSymb: Optional[str] = None, RptDt: Optional[str] = No
 
     with engine.connect() as connection:
         result = connection.execute(text(query), params).fetchall()
-        return [dict(row) for row in result]
+        return [dict(row._mapping) for row in result]
 
 def get_upload_history(filename: Optional[str] = None, upload_date: Optional[str] = None):
     """Busca o histórico de uploads com filtros."""
@@ -92,7 +92,7 @@ def get_upload_history(filename: Optional[str] = None, upload_date: Optional[str
 
     with engine.connect() as connection:
         result = connection.execute(text(query), params).fetchall()
-        return [dict(row.mapping) for row in result]
+        return [dict(row._mapping) for row in result]
 
 # Inicializa o banco ao carregar o módulo
 initialize_database()
