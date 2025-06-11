@@ -16,7 +16,7 @@ class UploadHistoryOut(BaseModel):
   filename: str
   upload_date: date
 
-class PaginatedInstrumentOut(BaseModel):
+class PaginatedInstrumentsOut(BaseModel):
   """Schema de saída para resultados paginados."""
   page: int
   page_size: int
