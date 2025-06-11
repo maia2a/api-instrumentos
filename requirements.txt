@@ -1,1 +1,7 @@
-pip install fastapi uvicorn pydantic pandas sqlalchemy python-multipart
+fastapi
+uvicorn
+pydantic
+pandas
+sqlalchemy
+python-multipart
+openpyxl

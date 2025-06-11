@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  # A palavra 'api' deve estar indentada (geralmente com 2 espaços).
+  api:
+    # Todas as chaves abaixo (build, container_name, etc.)
+    # devem estar indentadas em relação a 'api' (total de 4 espaços).
+    build: .
+    container_name: financial_api_service
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
