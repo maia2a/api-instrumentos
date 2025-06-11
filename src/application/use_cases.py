@@ -39,7 +39,7 @@ def process_file_upload (file: IO, filename: str):
 
 def find_instruments(TckrSymb: Optional[str]=None, RptDt: Optional[str]=None, page: int = 1, page_size: int = 20):
     """Caso de uso para buscar instrumentos."""
-    return repositories.find_instruments(TckrSymb, RptDt, page, page_size)
+    return repositories.search_instruments(TckrSymb, RptDt, page, page_size)
 def list_upload_history(filename: Optional[str]=None, upload_date: Optional[str]=None):
     """Caso de uso para listar o histórico de upload de arquivos."""
     return repositories.get_upload_history(filename, upload_date)
