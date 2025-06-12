@@ -5,3 +5,6 @@ pandas
 sqlalchemy
 python-multipart
 openpyxl
+pytest 
+pytest-mock 
+httpx

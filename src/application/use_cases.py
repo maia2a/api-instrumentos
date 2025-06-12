@@ -14,7 +14,7 @@ def process_file_upload (file: IO, filename: str):
     file_hash = hashlib.sha256(file_content).hexdigest()
 
     if repositories.is_file_processed(file_hash):
-        raise ValueError('Arquivo já processado anteriormente')
+        raise ValueError('Arquivo já processado anteriormente.')
     # Processa o arquivo com Pandas para lidar com grandes volumes
     try:
         if filename.endswith('.csv'):
