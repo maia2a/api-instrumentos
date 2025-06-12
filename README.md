@@ -95,6 +95,3 @@ Feito por **[Gabriell Maia do Amaral Duarte]**
 
 <!-- end list -->
 
-```
-
-```
