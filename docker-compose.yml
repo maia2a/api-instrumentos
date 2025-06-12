@@ -1,13 +1,21 @@
 version: '3.8'
 
 services:
-  # A palavra 'api' deve estar indentada (geralmente com 2 espaços).
+  # Serviço da API
   api:
-    # Todas as chaves abaixo (build, container_name, etc.)
-    # devem estar indentadas em relação a 'api' (total de 4 espaços).
     build: .
     container_name: financial_api_service
     ports:
       - "8000:8000"
     volumes:
       - .:/app
+    # Garante que o serviço de redis inicie antes da api
+    depends_on:
+      - redis
+
+  # Serviço do Redis
+  redis:
+    image: redis:7-alpine
+    container_name: financial_api_redis
+    ports:
+      - "6379:6379"

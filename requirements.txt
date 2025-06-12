@@ -8,3 +8,4 @@ openpyxl
 pytest 
 pytest-mock 
 httpx
+redis
