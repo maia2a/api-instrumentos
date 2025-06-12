@@ -1,33 +1,28 @@
-
------
-
-
-
 ````markdown
 # Desafio Desenvolvedor - API de Instrumentos Financeiros
 
 ![Python](https://img.shields.io/badge/Python-3.12%2B-blue.svg)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.110%2B-green.svg)
 ![Docker](https://img.shields.io/badge/Docker-25%2B-blue.svg)
+![Redis](https://img.shields.io/badge/Redis-7%2B-red.svg)
+![Pytest](https://img.shields.io/badge/Pytest-8%2B-brightgreen.svg)
 ![Status](https://img.shields.io/badge/status-concluído-brightgreen)
 
-Este repositório contém a solução para o **Desafio de Desenvolvedor da Oliveira Trust**. O projeto consiste em uma API RESTful para processar, armazenar e consultar dados de instrumentos financeiros, com base nos arquivos disponibilizados pela B3.
+Este repositório contém a solução para o **Desafio de Desenvolvedor da Oliveira Trust**. O projeto consiste em uma API RESTful para processar, armazenar e consultar dados de instrumentos financeiros.
 
-A aplicação foi desenvolvida em Python, utilizando o framework FastAPI, e estruturada com foco em **Clean Code** e **Clean Architecture**, visando a manutenibilidade, testabilidade e separação de responsabilidades. O ambiente é totalmente containerizado com Docker para garantir consistência e facilidade no setup.
+A aplicação foi desenvolvida em Python, utilizando o framework FastAPI, e estruturada com foco em **Clean Code** e **Clean Architecture**. O ambiente é totalmente containerizado com Docker, inclui um sistema de cache com Redis para otimização de performance e uma suíte de testes automatizados com Pytest para garantir a qualidade do código.
 
 ## ✨ Principais Funcionalidades
 
-- **Upload de Arquivos:** Endpoint para receber arquivos nos formatos `.csv` e `.xlsx`. Possui uma trava para impedir o processamento do mesmo arquivo (baseado no conteúdo) mais de uma vez.
-- **Histórico de Uploads:** Endpoint que permite consultar os arquivos que já foram processados, com filtros por nome e data de upload.
-- **Busca de Instrumentos:** Endpoint robusto para consultar os dados dos instrumentos, permitindo filtros por `TckrSymb` e `RptDt`. Caso nenhum filtro seja aplicado, o resultado é paginado.
+- **Upload de Arquivos:** Endpoint para receber arquivos (`.csv`, `.xlsx`) com prevenção de duplicatas.
+- **Histórico de Uploads:** Endpoint para consultar os arquivos processados, com filtros por nome e data.
+- **Busca de Instrumentos:** Endpoint robusto para consultar os dados, com filtros e paginação.
+- **Cache de Consultas:** As buscas de instrumentos são cacheadas com Redis para respostas mais rápidas em requisições repetidas.
+- **Testes Automatizados:** Suíte de testes unitários com `pytest` para garantir a confiabilidade da lógica de negócio.
 
 ## 🏛️ Arquitetura do Projeto
 
-Para garantir um código desacoplado e organizado, a aplicação segue os princípios da **Arquitetura Limpa (Clean Architecture)**. As responsabilidades são divididas em camadas:
-
-- **`src/domain`**: A camada mais interna. Contém as entidades de negócio e as regras puras.
-- **`src/application`**: Contém os casos de uso que orquestram o fluxo de dados.
-- **`src/infrastructure`**: A camada mais externa. Contém os detalhes de implementação (FastAPI, SQLAlchemy, etc.).
+A aplicação segue os princípios da **Arquitetura Limpa (Clean Architecture)**, com responsabilidades divididas em camadas (`domain`, `application`, `infrastructure`) para garantir um código desacoplado, testável e de fácil manutenção.
 
 ## 🚀 Tecnologias Utilizadas
 
@@ -35,104 +30,71 @@ Para garantir um código desacoplado e organizado, a aplicação segue os princ�
 - **Framework da API:** FastAPI
 - **Processamento de Dados:** Pandas & OpenPyXL
 - **Banco de Dados:** SQLite (via SQLAlchemy Core)
+- **Cache:** Redis
+- **Testes:** Pytest, Pytest-Mock, HTTPX
 - **Containerização:** Docker & Docker Compose
 - **Servidor ASGI:** Uvicorn
 
-## 🚀 Como Executar o Projeto
+## 🚀 Como Executar
 
-Existem duas formas de executar a aplicação. A maneira com Docker é a mais recomendada por ser mais simples e garantir um ambiente consistente.
+### Executando a Aplicação
 
-### Opção 1: Com Docker (Recomendado)
-
-Esta abordagem garante que você não precise se preocupar com versão do Python ou dependências.
+A maneira mais recomendada de executar o projeto é com Docker, pois ele gerencia a aplicação e o serviço de Redis automaticamente.
 
 **Pré-requisitos:**
+
 - Docker
 - Docker Compose
 
 **Execução:**
 Na raiz do projeto, execute o seguinte comando:
+
 ```bash
 docker compose up --build
+```
 ````
 
-Isso irá construir a imagem Docker e iniciar o contêiner da aplicação. A API estará disponível em `http://127.0.0.1:8000`.
+Isso irá construir as imagens e iniciar os contêineres da API e do Redis. A aplicação estará disponível em `http://127.0.0.1:8000`.
 
-Para parar a aplicação, pressione `Ctrl + C` no terminal e depois execute `docker compose down` para remover os contêineres.
+Para parar a aplicação, pressione `Ctrl + C` no terminal e depois execute `docker compose down`.
 
-### Opção 2: Localmente (Sem Docker)
+### Executando os Testes
 
-**Pré-requisitos:**
+**Opção 1: Com Docker (Recomendado)**
+Com a aplicação rodando (`docker compose up`), abra um **segundo terminal** e execute:
 
-  - Git
-  - Python 3.12 ou superior
+```bash
+docker compose exec api pytest
+```
 
-**Passos:**
+Este comando executa o `pytest` dentro do contêiner da `api` que já está em execução.
 
-1.  **Clone o repositório:**
-    ```bash
-    git clone <URL_DO_SEU_REPOSITORIO>
-    cd desafio-desenvolvedor
-    ```
-2.  **Crie e ative um ambiente virtual:**
-    ```bash
-    python3 -m venv venv
-    source venv/bin/activate
-    ```
-3.  **Instale as dependências:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-4.  **Inicie o servidor:**
-    ```bash
-    uvicorn main:app --reload
-    ```
+**Opção 2: Localmente**
+Se você instalou as dependências localmente, basta ativar seu ambiente virtual e rodar:
 
-A API estará disponível em `http://127.0.0.1:8000`.
+```bash
+# Ativar ambiente virtual (se não estiver ativo)
+source venv/bin/activate
+
+# Rodar os testes
+pytest
+```
 
 ## 📚 Documentação e Uso da API
 
-A documentação interativa da API é gerada automaticamente pelo FastAPI e pode ser acessada em:
+A documentação interativa da API (Swagger UI) é gerada automaticamente e pode ser acessada em:
 
-  * **Swagger UI:** [http://127.0.0.1:8000/docs](https://www.google.com/search?q=http://127.0.0.1:8000/docs)
+- **Swagger UI:** [http://127.0.0.1:8000/docs](https://www.google.com/search?q=http://127.0.0.1:8000/docs)
 
 Nesta página, é possível visualizar todos os endpoints e testá-los diretamente pelo navegador.
 
-### Exemplos de Uso com `curl`
-
-#### 1\. Upload de Arquivo
-
-```bash
-curl -X POST -F "file=@/caminho/para/seu/teste.csv" [http://127.0.0.1:8000/api/upload](http://127.0.0.1:8000/api/upload)
-```
-
-#### 2\. Consultar Histórico de Uploads
-
-```bash
-curl -X GET "[http://127.0.0.1:8000/api/history?filename=teste.csv](http://127.0.0.1:8000/api/history?filename=teste.csv)"
-```
-
-#### 3\. Buscar Conteúdo dos Arquivos
-
-```bash
-curl -X GET "[http://127.0.0.1:8000/api/instruments?TckrSymb=AMZO34&RptDt=2025-06-11](http://127.0.0.1:8000/api/instruments?TckrSymb=AMZO34&RptDt=2025-06-11)"
-```
-
-## ⭐ Possíveis Melhorias (Bônus)
-
-Para demonstrar conhecimento em tecnologias adicionais e escalabilidade, as seguintes melhorias podem ser implementadas:
-
-  - **Filas (Celery & Redis):** Mover o processamento de arquivos para uma tarefa assíncrona.
-  - **Cache (Redis):** Implementar um cache para as consultas mais frequentes.
-  - **Testes Automatizados (`pytest`):** Adicionar testes unitários e de integração para garantir a qualidade do código.
-  - **Banco de Dados NoSQL (MongoDB):** Migrar a persistência dos dados para um banco de dados orientado a documentos.
-  - **Autenticação (JWT):** Proteger os endpoints da API utilizando tokens JWT.
-
------
-
 Feito por **[Gabriell Maia do Amaral Duarte]**
 
-  * **LinkedIn:** [https://www.linkedin.com/in/biellmaaia/](https://www.google.com/search?q=https://www.linkedin.com/in/biellmaaia/)
-  * **GitHub:** [https://github.com/maia2a](https://www.google.com/search?q=https://github.com/maia2a)
+- **LinkedIn:** [https://www.linkedin.com/in/biellmaaia/]
+- **GitHub:** [https://github.com/maia2a]
 
 <!-- end list -->
+
+```
+
+```
